@@ -1,0 +1,402 @@
+// 🛠️ Product Catalog System (Real-World Object Use Case)
+
+//* 🎯 Goal:
+//  Build a simple Product Catalog that:
+//  • Uses object literals and methods.
+//  • Leverages the spread operator to clone/extend products.
+//  • Allows easy expansion for future product types.
+
+//* 🔧 Project Structure:
+//* 🧱 1. Define a base product
+//  Includes shared properties like:
+
+const baseProduct = {
+    category: 'general',
+    inStock: true,
+    price: 0,
+    getLabel() {
+        return `Product in category: ${this.category}, priced at $${this.price}`;
+    },
+};
+
+//* 🧩 2. Create specific product types using the spread operator
+
+const phone = {
+    ...baseProduct,
+    category: 'electronics',
+    brand: 'Samsung',
+    model: 'Galaxy S23',
+    price: 899.
+};
+
+const book = {
+    ...baseProduct,
+    category: 'books',
+    title: 'Eloquent JavaScript',
+    author: 'Marijn Haverbeke',
+    price: 39.99
+};
+
+//* 🛒 3. Display product labels using methods
+
+console.log(phone.getLabel()); // Product in category: electronics, priced at $899
+console.log(book.getLabel());  // Product in category: books, priced at $39.99
+
+//* ✅ Your Tasks:
+//  1. ✅ Implement the baseProduct with a getLabel() method.
+//  2. ✅ Create at least 3 products using spread (e.g., phone, book, t-shirt).
+//  3. ✅ Call getLabel() on each product.
+//  4. ✅ Add one custom method to one product only (e.g., book.read()).
+//  5. ✅ Add logic to update a product's inStock to false.
+
+//* 💡 Bonus Stretch Goal:
+//  • Loop over the products in an array and log their labels.
+//  • Add a discountedPrice(percent) method using this.price.
+
+//! Solution
+
+//* Step 1.
+
+console.log(baseProduct.getLabel());
+
+//* Step 2.
+
+const phone2 = {
+    ...baseProduct,
+    category: 'electronics',
+    brand: 'iPhone',
+    model: '16 Pro',
+    price: 1199.00
+};
+
+const book2 = {
+    ...baseProduct,
+    category: 'books',
+    title: 'Learning JavaScript',
+    author: 'Ethan Brown',
+    price: 36.24
+};
+
+const tShirt = {
+    ...baseProduct,
+    category: 'clothing',
+    brand: 'Adidas',
+    model: 'Crew Neck',
+    price: 24.00
+};
+
+//* Step 3.
+
+console.log(phone2.getLabel());
+console.log(book2.getLabel());
+console.log(tShirt.getLabel());
+
+//* Step 4.
+
+phone2.describe = function() {
+    console.log(`Product: ${this.brand} ${this.model} (${this.category}) - $${this.price}`);
+};
+
+book2.read = function() {
+    console.log(`Reading "${this.title}" by ${this.author}...`);
+};
+
+tShirt.wear = function() {
+    console.log(`Wearing the ${this.brand} ${this.model} t-shirt.`);
+};
+
+phone2.describe();
+book2.read();
+tShirt.wear();
+
+//* Step 5.
+
+baseProduct.inStock = false;
+
+console.log(baseProduct);
+
+//* Bonus
+
+const products = [phone, book, phone2, book2, tShirt];
+
+products.forEach(product => { console.log(product.getLabel); });
+
+
+//  🧱 Reusable Object Blueprint - Challenge 1
+
+//* 🎯 Objective:
+//  Create reusable object “blueprints” (via factory functions or spread-based base objects) to efficiently define different product types in a scalable catalog.
+
+//* 🛠️ The Setup
+//  Must be build:
+//  1. A base product object with core fields.
+//  2. A factory function that takes input and returns a new product.
+//  3. Different blueprint extensions for specific product categories (e.g., books, electronics).
+//  4. Each product type must have:
+//  • Custom fields.
+//  • Shared method(s) from the base.
+//  • Unique behavior (one custom method per type).
+
+
+//* 📋 Requirements
+//* ✅ Step 1: Create baseProduct
+//* ✅ Step 2: Build a createProduct factory function
+//* ✅ Step 3: Define category blueprints
+//* ✅ Step 4: Create specific products with the factory
+//* ✅ Step 5: Test All Methods
+
+//* 🧠 Bonus Challenge (Optional):
+//  • Add a discountedPrice(percent) method to baseProduct.
+//  • Create a clothingBlueprint with a wear() method.
+//  • Store multiple created products in an array and loop through calling getLabel().
+
+//! Solution
+
+//* Step 1.
+
+const baseProduct2 = {
+    inStock: true,
+    price: 0,
+    getLabel() {
+        return `${this.name} - $${this.price}`;
+    },
+};
+
+//* Step 2.
+
+function createProduct(typeBluePrint, overrides = {}) {
+    return {
+        ...baseProduct2,
+        ...typeBluePrint,
+        ...overrides,
+    };
+};
+
+//* Step 3.
+
+const bookBlueprint = {
+    category: 'book',
+    format: 'paperback',
+    read() {
+        return `Reading ${this.title}...`;
+    },
+};
+
+const electronicBlueprint = {
+    category: 'electronics',
+    warranty: '1 year',
+    powerOn() {
+        return `${this.brand} ${this.model} is powering on.`;
+    },
+};
+
+//* Step 4.
+
+const jsBook = createProduct(bookBlueprint, {
+    title: 'You Don\'t Know JS',
+    price: 29.99,
+});
+
+const phone3 = createProduct(electronicBlueprint, {
+    brand: 'Apple',
+    model: 'iPhone 16',
+    price: 1199.99
+});
+
+//* Step 5.
+
+console.log(jsBook.getLabel());    // You Don’t Know JS - $29.99
+console.log(jsBook.read());        // Reading You Don’t Know JS...
+
+console.log(phone3.getLabel());     // iPhone 16 - $1199.99
+console.log(phone3.powerOn());      // Apple iPhone 16 is powering on.
+
+//* Bonus
+
+// 1. Add discountedPrice method to baseProduct
+baseProduct.discountedPrice = function(percent) {
+    if (percent < 0 || percent > 100) {
+      return this.price; // Invalid percentage, return original price
+    }
+    return this.price - (this.price * (percent / 100));
+};
+
+// 2. Create a clothing blueprint with a wear() method
+const clothingBlueprint = {
+    category: 'clothing',
+    size: 'M',
+    wear() {
+        return `Wearing the ${this.name} in size ${this.size}.`;
+    },
+};
+
+// Create some clothing products
+const tshirt = createProduct(clothingBlueprint, {
+    name: 'Cool T-Shirt',
+    price: 19.99,
+    size: 'L',
+});
+
+const jacket = createProduct(clothingBlueprint, {
+    name: 'Leather Jacket',
+    price: 89.99,
+    size: 'M',
+});
+
+// Store multiple products in an array and loop through calling getLabel()
+const products2 = [jsBook, phone, tshirt, jacket];
+
+products2.forEach(product => {
+    console.log(product.getLabel());
+    // If the product has a wear() method
+    if (typeof product.wear === 'function') {
+        console.log(product.wear());
+    }
+
+    // If the product has discountedPrice method
+    if (typeof product.discountedPrice === 'function') {
+        console.log(`Discounted price (20% off): $${product.discountedPrice(20).toFixed(2)}`);
+    }
+});
+
+
+//  🧱 Reusable Object Blueprint System - Challenge 2
+
+//* 🎯 Objectives:
+//  1. Create a baseProduct with shared properties/methods.
+//  2. Define category blueprints (e.g., bookBlueprint, electronicsBlueprint).
+//  3. Implement a createProduct() factory function that merges base + blueprint + overrides.
+//  4. Create multiple product instances using this system.
+//  5. Add unique methods per category (e.g., .read(), .powerOn()).
+//  6. Use the spread operator to keep everything clean and modular.
+
+//! Solution
+
+//* Step 1.
+
+const starterProduct = {
+    category: 'general',
+    price: 0,
+    inStock: true,
+    getLabel() {
+        return `Category: ${this.category} - $${this.price}`;
+    },
+};
+
+
+//* Step 2.
+
+const printBlueprint = {
+    category: 'magazine',
+    format: 'paper',
+    read() {
+        return `Reading ${this.title}...`
+    },
+};
+
+const electronicsBlueprint = {
+    category: 'computers',
+    brand: 'name',
+    model: 'label',
+    warranty: '3 years',
+    powerOn() {
+        return `${this.brand} ${this.model} is powering on.`;
+    },
+};
+
+const apparelBlueprint = {
+    category: 'shoe',
+    brand: 'name',
+    model: 'label',
+    size: 45,
+    wear() {
+        return `${this.brand} ${this.model} are great for wedding`
+    },
+};
+
+//! 💡 These are well-structured but not used later. You defined other custom blueprints in Step 4 instead (which is fine!). Consider removing unused ones or integrating them with buildProduct().
+
+//* Step 3.
+
+function buildProduct(categoryBluePrint, overrides = {}) {
+    return {
+        ...starterProduct,
+        ...categoryBluePrint,
+        ...overrides,
+    };
+};
+
+//! 💡 This is now a scalable system. If you want to centralize behavior (like logging, discounts, stock updates), this is the function you’d enhance.
+
+//* Step 4.
+
+const magazineBlueprint = {
+    category: 'online',
+    title: 'Forbes',
+    read() {
+        return `Reading online ${this.title}...`;
+    },
+};
+
+const forbesMagazine = buildProduct(magazineBlueprint, { price: 8.99 });
+
+const booksBlueprint = {
+    category: 'print',
+    title: 'West',
+    author: 'Paul William',
+    read() {
+        return `These days I am reading ${this.title} by ${this.author}.`;
+    },
+};
+
+const westBook = buildProduct(booksBlueprint, { price: 24.99 });
+console.log(westBook.getLabel());
+console.log(westBook.read());
+
+
+const computerBlueprint = {
+    category: 'personal computer',
+    brand: 'Dell',
+    model: 'CZC1827',
+    powerOn() {
+        return `I am using ${this.brand} ${this.model} to develop software. `;
+    },
+};
+
+const dellComputer = buildProduct(computerBlueprint, { language: 'JavaScript' });
+
+const phoneBlueprint = {
+    category: 'mobile',
+    brand: 'Nokia',
+    model: '3310',
+    price: 249.99,
+    powerOn() {
+        return `The manufacturer has developed a new ${this.brand} ${this.model} that is offered for sale.`
+    }
+};
+
+const nokiaPhone = buildProduct(phoneBlueprint, { color: 'black' });
+
+const tabletBlueprint = {
+    category: 'tablet',
+    brand: 'Allview',
+    model: 'NAM2',
+    price: 380,
+    powerOn() {
+        return `${this.brand} ${this.model} is the newest model on the market from ${this.brand}`;
+    },
+};
+
+const allviewTablet = buildProduct(tabletBlueprint, { color: 'grey' });
+
+const shirtBlueprint = {
+    category: 'clothing',
+    brand: 'eton',
+    model: 'Solid Oxford Shirt',
+    color: 'white',
+    wear() {
+        return `${this.brand} came on the market with ${this.model} ${this.color}.`
+    },
+};
+
+const etonShirt = buildProduct(shirtBlueprint, { price: 270.00 });
